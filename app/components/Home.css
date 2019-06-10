@@ -12,3 +12,14 @@
 .container a {
   font-size: 1.4rem;
 }
+
+.dataa {
+  padding: 20px;
+
+  /* max-height:300px;overflow:scroll; */
+}
+
+.datab {
+  max-height: 220px;
+  overflow: scroll;
+}
