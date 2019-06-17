@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { List, Row, Col, Typography, Input, Button } from 'antd';
 import BraftEditor from 'braft-editor';
 // import routes from '../constants/routes';
-import test from '../utils/getfiles';
+import RegularProcess from '../utils/RegularProcess';
 import styles from './Home.css';
 import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
 import 'braft-editor/dist/index.css';
@@ -44,7 +44,7 @@ export default class Home extends Component<Props> {
   handleFootnotehange = e => {
     const that = this;
     const { article } = this.state;
-    const footnoteData = test.getFootnoteData(e.toText());
+    const footnoteData = RegularProcess.getFootnoteData(e.toText());
     // console.log(data)
     return footnoteData
       .then(footnoteInfo => {
@@ -52,7 +52,7 @@ export default class Home extends Component<Props> {
         that.setState({
           footnoteList: footnoteInfo
         });
-        return test.getOutputData(article, footnoteInfo);
+        return RegularProcess.getOutputData(article, footnoteInfo);
       })
       .then(outputData => {
         console.log('==============');
