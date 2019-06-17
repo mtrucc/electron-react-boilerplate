@@ -80,6 +80,12 @@ export default class Home extends Component<Props> {
       {
         key: 'custom-button',
         type: 'button',
+        text: '直接粘贴正文',
+        onClick: this.uploadArticleFile
+      },
+      {
+        key: 'custom-button2',
+        type: 'button',
         text: '上传正文文件',
         onClick: this.uploadArticleFile
       }
@@ -88,6 +94,12 @@ export default class Home extends Component<Props> {
     const footnoteExtendControls = [
       {
         key: 'custom-button',
+        type: 'button',
+        text: '直接粘贴脚注',
+        onClick: this.uploadFootnoteFile
+      },
+      {
+        key: 'custom-button2',
         type: 'button',
         text: '上传脚注文件',
         onClick: this.uploadFootnoteFile
