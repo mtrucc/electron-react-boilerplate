@@ -8,11 +8,32 @@ import RegularProcess from '../utils/RegularProcess';
 import styles from './Home.css';
 import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
 import 'braft-editor/dist/index.css';
+// import { CopyToClipboard } from "react-copy-to-clipboard";
+
+const { dialog } = require('electron').remote;
+const { ipcRenderer } = require('electron');
 
 type Props = {};
 
 export default class Home extends Component<Props> {
   props: Props;
+
+  constructor() {
+    super();
+    ipcRenderer.on('fileData', (event, arg) => {
+      // let template = '<p>' + arg.replace(/\n{2,}/g, "</p><p>").replace(/\n/g, "</p><p>") + '</p>';
+      // let template = '<p>' + arg.replace(/\n/g, '</p><p>') + '</p>';
+      const template = arg
+        .split('\n')
+        .map(e => `<p>${e}</p>`)
+        .join('');
+      // arg.split('\n').map(e => '<p>' + e + '</p>').join("");
+      this.setState({
+        article: BraftEditor.createEditorState(template)
+      });
+      // console.log(arg) // prints "pong"
+    });
+  }
 
   state = {
     // editorState: BraftEditor.createEditorState(''), // 设置编辑器初始内容
@@ -24,6 +45,25 @@ export default class Home extends Component<Props> {
   };
 
   uploadArticleFile = () => {
+    const options = {
+      title: '打开正文文件'
+      // defaultPath: '/path/to/something/',
+      // buttonLabel: 'Do it',
+      /* filters: [
+        { name: 'xml', extensions: ['xml'] }
+      ], */
+      // properties: ['showHiddenFiles'],
+      // message: 'This message will only be shown on macOS'
+    };
+
+    dialog.showOpenDialog(null, options, filePaths => {
+      if (filePaths) {
+        ipcRenderer.send('readFile', filePaths[0]);
+      }
+      // filePaths && ipcRenderer.send('readFile', filePaths[0]);
+      // console.log(filePaths);
+      // event.sender.send('open-dialog-paths-selected', filePaths)
+    });
     // this.setState({
     //   editorState: ContentUtils.insertText(this.state.editorState, '你好啊！')
     // });
@@ -75,7 +115,7 @@ export default class Home extends Component<Props> {
 
     const { TextArea } = Input;
 
-    const { output, footnote, footnoteList } = this.state;
+    const { output, footnote, footnoteList, article } = this.state;
     const articleExtendControls = [
       {
         key: 'custom-button',
@@ -114,7 +154,7 @@ export default class Home extends Component<Props> {
               <h2>正文</h2>
               <BraftEditor
                 controls={controls}
-                value={null}
+                value={article}
                 onChange={this.handleArticleChange}
                 extendControls={articleExtendControls}
                 contentStyle={{ height: 200 }}
